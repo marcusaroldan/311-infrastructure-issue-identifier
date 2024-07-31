@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+    <title>Boston 311 Infrastructure Issues</title>
+    
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js"></script> 
+    <script src="constants.js"></script>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet">
+
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+
+        function formatPopup(feature) {
+            var properties = feature.properties;
+            var id = `<li>Service Request ID: ${feature.id}</li>`;
+            var address = `<li>Address: ${properties['Address']}</li>`;
+            var dt = `<li>Date/Time: ${new Date(properties['Date/Time']).toLocaleString('en-US')}</li>`;
+            var desc = `<li>Description: ${properties['Description']}</li>`;
+            var classes = `<li>Type(s) of Issue: ${JSON.parse(properties['Type of Issue']).join(', ')}</li>`;
+            var keywords = `<li>Keyword Matches: ${JSON.parse(properties['Keyword Matches']).join(', ')}</li>`;
+            var media = `<li>Attached Media: ${properties['Attached Media'] !== 'No media attached.' ? `<a href='${properties['Attached Media']}' target='_blank'>Click to view media.</a>` : properties['Attached Media']}</li>`;
+
+            const ul_wrapper = document.createElement('ul');
+            ul_wrapper.append(id, address, dt, desc, classes, keywords, media);
+            return ul_wrapper.outerText;
+        }
+
+        // mapboxgl.accessToken = constants.MAPBOX_API_KEY;
+        mapboxgl.accessToken;
+        
+        const map = new mapboxgl.Map(
+            {
+                container: 'map',
+                center: [-71.05, 42.3],
+                zoom: 9
+            }
+        );
+
+        map.on('load', () => {
+            map.addLayer(
+                {
+                    id: 'issues-points',
+                    type: 'circle',
+                    source: {
+                        type: 'geojson',
+                        data: 'data/infra_issues.geojson'
+                    },
+                    'minzoom': 7,
+                    'paint': {
+					'circle-radius': [
+						'interpolate', ['linear'], ['zoom'],
+						12, ['interpolate', ['linear'], ['get', 'total_crashes'], 1, 3, 100, 40],
+						18, ['interpolate', ['linear'], ['get', 'total_crashes'], 1, 10, 100, 120],
+						],
+					'circle-color': '#d500f9',
+					'circle-stroke-color': '#9e00c5',
+					'circle-opacity': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							7,
+							1,
+							8,
+							1
+						]
+				},
+                });
+        });
+
+
+        map.on('mouseenter', 'issues-points', function () {
+				map.getCanvas().style.cursor = 'pointer';
+			});
+
+		map.on('mouseleave', 'issues-points', function () {
+				map.getCanvas().style.cursor = '';
+			});
+
+		map.on('click', 'issues-points', function(e) {
+				var coordinates = e.features[0].geometry.coordinates.slice();
+				new mapboxgl.Popup()
+					.setLngLat(coordinates)
+					.setHTML(formatPopup(e.features[0]))
+					.addTo(map);
+			});
+
+
+
+    </script>
+</body>
