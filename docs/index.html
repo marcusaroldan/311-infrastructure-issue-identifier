@@ -63,7 +63,7 @@
 
             map.addSource('issues', {
                 'type': 'geojson',
-                'data': 'data/infra_issues.geojson'
+                'data': '../data/infra_issues.geojson'
             })
 
             map.addLayer(
@@ -72,7 +72,7 @@
                     type: 'circle',
                     source: {
                         type: 'geojson',
-                        data: 'data/infra_issues.geojson'
+                        data: '../data/infra_issues.geojson'
                     },
                     'minzoom': 7,
                     'paint': { 
