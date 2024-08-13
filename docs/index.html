@@ -6,7 +6,6 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js"></script>
-    <script src="constants.js"></script>
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
@@ -63,7 +62,7 @@
 
             map.addSource('issues', {
                 'type': 'geojson',
-                'data': '../data/infra_issues.geojson'
+                'data': './data/infra_issues.geojson'
             })
 
             map.addLayer(
@@ -72,7 +71,7 @@
                     type: 'circle',
                     source: {
                         type: 'geojson',
-                        data: '../data/infra_issues.geojson'
+                        data: './data/infra_issues.geojson'
                     },
                     'minzoom': 7,
                     'paint': { 
