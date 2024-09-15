@@ -9,6 +9,9 @@ This notebook takes in raw service request data and categorizes it according to 
 - [`infrastructure-issues-map-preprocess.ipynb`](infrastrucutre-issues-map-preprocess.ipynb):
 This notebook converts categorized service requests (output file of `infrastructure-issue-identifier.ipynb`) into GeoJSON format for display.
 
+- [`collect-new-service-reports.ipynb`](collect-new-service-reports.ipynp):
+The script contained in this notebook collects new service reports and adds them to an existing file containing historical service requests. Running this file as is will update the map to contain new Illegal Parking reports.
+
 - [`data/infra_issues.geojson`](data/infra_issues.geojson):
 Example result file of `infrastructure-issues-map-preprocess.ipynb`.
 
